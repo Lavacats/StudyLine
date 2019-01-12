@@ -1,0 +1,36 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "ArenaBattle.h"
+#include "GameFramework/SaveGame.h"
+#include "ABSaveGame.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARENABATTLE_API UABSaveGame : public USaveGame
+{
+	GENERATED_BODY()
+	
+public:
+	UABSaveGame();
+
+	UPROPERTY()
+	int32 Level;
+
+	UPROPERTY()
+	int32 Exp;
+
+	UPROPERTY()
+	FString PlayerName;
+
+	UPROPERTY()
+	int32 HighScore;
+	// 플레이어 정보
+
+	UPROPERTY()
+	int32 CharacterIndex;
+	// 캐릭터 인덱스 정보
+};
