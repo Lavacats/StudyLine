@@ -1,0 +1,174 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#include "Practice1Character.h"
+// Sets default values
+APractice1Character::APractice1Character()
+{
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
+	hairMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HairMesh"));
+	upperMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("UpperMesh"));
+	underMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("UnderMesh"));
+
+	SpringArm->SetupAttachment(GetCapsuleComponent());
+	Camera->SetupAttachment(SpringArm);
+
+	GetCapsuleComponent()->SetCapsuleRadius(10);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(30);
+
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -34.0f),FRotator(0.0f,-90.0f,0.0f));
+	
+	SpringArm->TargetArmLength = 150.0f;
+	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> Root_Mesh(TEXT("/Game/PlayerCharacter/LINK_FBX/Idle.Idle"));
+	if (Root_Mesh.Succeeded()) {
+		GetMesh()->SetSkeletalMesh(Root_Mesh.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> hairSkeletal(TEXT("/Game/PlayerCharacter/Hair/1/Hair.Hair"));
+	if (hairSkeletal.Succeeded()) {
+		hairMesh->SetSkeletalMesh(hairSkeletal.Object);
+	}
+	hairMesh->SetupAttachment(GetMesh());
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> shirtsSkeletal(TEXT("/Game/PlayerCharacter/Shirts/1/shirts2.shirts2"));
+	if (shirtsSkeletal.Succeeded()) {
+		upperMesh->SetSkeletalMesh(shirtsSkeletal.Object);
+	}
+	upperMesh->SetupAttachment(GetMesh());
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> pantsSkeletal(TEXT("/Game/PlayerCharacter/Pants/1/Pants.Pants"));
+	if (pantsSkeletal.Succeeded()) {
+		underMesh->SetSkeletalMesh(pantsSkeletal.Object);
+	}
+	underMesh->SetupAttachment(GetMesh());
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Player_ANIM(TEXT("/Game/PlayerCharacter/BP_Animation/Animation_BP.Animation_BP_C"));
+	if (Player_ANIM.Succeeded()) {
+		GetMesh()->SetAnimInstanceClass(Player_ANIM.Class);
+		hairMesh->SetAnimInstanceClass(Player_ANIM.Class);
+		upperMesh->SetAnimInstanceClass(Player_ANIM.Class);
+		underMesh->SetAnimInstanceClass(Player_ANIM.Class);
+	}
+	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->bInheritPitch = true;
+	SpringArm->bInheritRoll = true;
+	SpringArm->bInheritYaw = true;
+	SpringArm->bDoCollisionTest = false;
+	bUseControllerRotationYaw = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+
+	GetCharacterMovement()->JumpZVelocity = 400.0f;
+	GetCharacterMovement()->GravityScale = 1.0f;
+
+}
+
+// Called when the game starts or when spawned
+void APractice1Character::BeginPlay()
+{
+	Super::BeginPlay();
+	EplayerState = E_PlayerState::Player_IDLE;
+}
+
+// Called every frame
+void APractice1Character::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	OnJumpCheck();
+}
+
+// Called to bind functionality to input
+void APractice1Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis(TEXT("UpDown"),  this, &APractice1Character::UpDown);
+	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &APractice1Character::LeftRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APractice1Character::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &APractice1Character::Turn);
+
+	PlayerInputComponent->BindAction(TEXT("Walk"), EInputEvent::IE_Pressed, this, &APractice1Character::RunToWalk);
+	PlayerInputComponent->BindAction(TEXT("Walk"), EInputEvent::IE_Released, this, &APractice1Character::Stop);
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Run"), EInputEvent::IE_Pressed, this, &APractice1Character::WalkToRun);
+	PlayerInputComponent->BindAction(TEXT("Run"), EInputEvent::IE_Released, this, &APractice1Character::RunToWalk);
+}
+
+void APractice1Character::UpDown(float NewAxisValue)
+{
+	//if (!GetMovementComponent()->IsFalling())
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue*characterMoveSpeed);
+}
+
+void APractice1Character::LeftRight(float NewAxisValue)
+{
+	if (!GetMovementComponent()->IsFalling())
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue*characterMoveSpeed);
+}
+
+void APractice1Character::LookUp(float NewAxisValue)
+{
+	AddControllerPitchInput(NewAxisValue);
+}
+
+void APractice1Character::Turn(float NewAxisValue)
+{
+	AddControllerYawInput(NewAxisValue);
+}
+
+void APractice1Character::WalkToRun()
+{
+	PlayerMovement(E_PlayerState::Player_RUN);
+
+}
+
+void APractice1Character::RunToWalk()
+{
+	PlayerMovement(E_PlayerState::Player_WALK);
+}
+
+void APractice1Character::Stop()
+{
+	PlayerMovement(E_PlayerState::Player_IDLE);
+}
+
+void APractice1Character::PlayerMovement(E_PlayerState State)
+{
+	switch (State)
+	{
+	case E_PlayerState::Player_IDLE:
+		characterMoveSpeed = 0.0f;
+		EplayerState = E_PlayerState::Player_IDLE;
+		break;
+	case E_PlayerState::Player_WALK:
+		characterMoveSpeed =0.5f;
+		EplayerState = E_PlayerState::Player_WALK;
+		break;
+	case E_PlayerState::Player_RUN:
+		if (EplayerState == E_PlayerState::Player_WALK) {
+			EplayerState = E_PlayerState::Player_RUN;
+			characterMoveSpeed = 1.0f;
+		}
+		break;
+	}
+}
+
+void APractice1Character::OnJumpCheck()
+{
+	static E_PlayerState preState;
+	if (GetMovementComponent()->IsFalling() && EplayerState != E_PlayerState::Player_JUMP) {
+		preState = EplayerState;
+		EplayerState = E_PlayerState::Player_JUMP;
+		inPlayerOnAir = true;
+	}
+	if (GetMovementComponent()->IsMovingOnGround() && inPlayerOnAir) {
+		inPlayerOnAir = false;
+		EplayerState = preState;
+	}
+}
+
