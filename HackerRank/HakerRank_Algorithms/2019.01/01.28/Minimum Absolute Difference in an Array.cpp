@@ -10,20 +10,21 @@
 #include <math.h>
 using namespace std;
 
-int main() {
-	int t = 0;
-	cin >> t;
-	vector<int> answer;
-	for (int i = 0; i < t; i++) {
-		int num = 0;
-		cin >> num;
-		answer.push_back(num);
+int minimumAbsoluteDifference(vector<int> arr) {
+	sort(arr.begin(), arr.end());
+	int minNum = arr[1] - arr[0];
+	for (int i = 1; i < arr.size(); i++) {
+		int value = arr[i] - arr[i - 1];
+		if (value < minNum) {
+			minNum = value;
+		}
 	}
-	sort(answer.begin(), answer.end());
-	for (int i = 0; i < answer.size(); i++) {
-		cout << answer[i];
-		cout << " ";
-	}
+	return minNum;
+}
+
+int main()
+{
+
 
 	return 0;
 }
