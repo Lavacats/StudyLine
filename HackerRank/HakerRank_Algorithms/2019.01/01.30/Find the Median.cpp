@@ -10,37 +10,14 @@
 #include <math.h>
 using namespace std;
 
-vector<int> closestNumbers(vector<int> arr) {
-	vector<int> answer;
+int findMedian(vector<int> arr) {
 	sort(arr.begin(), arr.end());
-	int minvalue = arr[1] - arr[0];
-	for (int i = 1; i < arr.size(); i++) {
-		int value = arr[i] - arr[i-1];
-		if (value == minvalue) {
-			answer.push_back(arr[i - 1]);
-			answer.push_back(arr[i]);
-		}
-		else if (value < minvalue) {
-			answer.clear();
-			answer.push_back(arr[i - 1]);
-			answer.push_back(arr[i]);
-			minvalue = value;
-		}
-	}
-	return answer;
+	return arr[arr.size() / 2];
 }
+
 
 int main()
 {
-	vector<int> value;
-	int repeatNum = 0;
-	cin >> repeatNum;
-	for (int i = 0; i < repeatNum; i++) {
-		int number;
-		cin >> number;
-		value.push_back(number);
-	}
-	value = closestNumbers(value);
-	for (int i = 0; i < value.size(); i++)cout << value[i]<<" ";
+
 	return 0;
 }
