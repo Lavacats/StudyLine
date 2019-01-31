@@ -11,36 +11,17 @@
 using namespace std;
 
 vector<int> missingNumbers(vector<int> arr, vector<int> brr) {
-	sort(arr.begin(), arr.end());
-	sort(brr.begin(), brr.end());
-	vector<int> firstArray;
-	vector<int> secondArray;
-	int value = arr[0];
-	firstArray.push_back(value);
-	for (int i = 0; i < arr.size(); i++) {
-		if (value != arr[i]) {
-			value = arr[i];
-			firstArray.push_back(value);
-		}
-	}
-	value = brr[0];
-	secondArray.push_back(value);
+	vector<int> board(200000);
 	for (int i = 0; i < brr.size(); i++) {
-		if (value != brr[i]) {
-			value = brr[i];
-			secondArray.push_back(value);
-		}
+		board[brr[i]]++;
+	}
+	for (int i = 0; i < arr.size(); i++) {
+		board[arr[i]]--;
 	}
 	vector<int> answer;
-	int count = 0;
-	for (int i = 0; i < firstArray.size(); i++) {
-		if (firstArray[i] != secondArray[i + count]) {
-			answer.push_back(brr[i + count]);
-			count++;
-			i--;
-		}
+	for (int i = 0; i < board.size(); i++) {
+		if (board[i] != 0)answer.push_back(i);
 	}
-
 	return answer;
 }
 
