@@ -64,7 +64,7 @@ APlayerCharacter::APlayerCharacter()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerCharacter"));
 	GetCapsuleComponent()->ComponentTags.Add(FName("PlayerCharacter"));
 
-	static ConstructorHelpers::FClassFinder<UPlayerUIWidget> UI_AIM(TEXT("/Game/UI/UI_AIM.UI_AIM_C"));
+	static ConstructorHelpers::FClassFinder<UPlayerUIWidget> UI_AIM(TEXT("/Game/UI/Player_UI.Player_UI_C"));
 	if (UI_AIM.Succeeded()) {
 		HDWidgetClass = UI_AIM.Class;
 	}
@@ -79,6 +79,7 @@ void APlayerCharacter::BeginPlay()
 	PlayerUI = CreateWidget<UPlayerUIWidget>(Cast< APlayerCharacterController>(GetWorld()->GetFirstPlayerController()), HDWidgetClass);
 	PlayerUI->AddToViewport();
 	PlayerUI->SetPlayerAim(false);
+	PlayerUI->SetHP(12, 12);
 }
 
 // Called every frame

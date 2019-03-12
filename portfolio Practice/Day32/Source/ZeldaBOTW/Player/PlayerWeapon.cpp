@@ -12,7 +12,8 @@ APlayerWeapon::APlayerWeapon()
 	Weapon_Sword = CreateDefaultSubobject<AWeapon_Equip>(TEXT("Weapon_Sword"));
 	Weapon_Shield = CreateDefaultSubobject<AWeapon_Equip>(TEXT("Weapon_Shield"));
 	Weapon_Bow = CreateDefaultSubobject<AWeapon_Equip>(TEXT("Weapon_Bow"));
-	ArrowBag = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArrowBag"));
+	ArrowBag = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ArrowBag"));
+
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>SK_Arrow(TEXT("/Game/OBJECT/Bow/Arrow/WeaponArrow.WeaponArrow"));
 	if (SK_Arrow.Succeeded()) {
@@ -35,7 +36,7 @@ APlayerWeapon::APlayerWeapon()
 void APlayerWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	//ArrowBag = GetWorld()->SpawnActor<AActor>(ArrowBagBP, FVector::ZeroVector, FRotator::ZeroRotator);
+
 }
 
 void APlayerWeapon::Tick(float DeltaTime)
@@ -82,8 +83,7 @@ void APlayerWeapon::setWeaponComponent(E_Weapon Weapon, USkeletalMeshComponent *
 		break;
 	case E_Weapon::Weapon_ARROW_BAG:
 		ArrowBag->AttachToComponent(MeshComponent, FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
-		ArrowBag->SetActorRelativeScale3D(FVector(0.4f, 0.4f, 0.4f));
-		ArrowBag->SetActorRelativeLocation(FVector(0.0f, -2.0f, 0.0f));
+		ArrowBag->SetRelativeLocation(FVector(0.0f, -2.0f, 0.0f));
 		break;
 	case E_Weapon::Weapon_None:
 		if (IsValid(Weapon_Sword)) {
@@ -107,6 +107,11 @@ void APlayerWeapon::setWeaponComponent(E_Weapon Weapon, USkeletalMeshComponent *
 
 void APlayerWeapon::FireArrow(FVector location, FRotator Rotation, FVector Forward)
 {
+	auto PlayerController = Cast< APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	auto PlayerUI = PlayerController->getPlayerCharacter()->getPlayerUI();
+
+	PlayerUI->SetArrowCount(ArrowCount);
+
 	if (ArrowCount > 0) {
 		Show_Arrow->SetVisibility(false);
 		ArrowCount--;
@@ -116,15 +121,16 @@ void APlayerWeapon::FireArrow(FVector location, FRotator Rotation, FVector Forwa
 			Arrow->setVelocity(NewVelocity);
 			Arrow->setHitEnemy(true);
 		}
-		auto PlayerController = Cast< APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-		auto PlayerUI = PlayerController->getPlayerCharacter()->getPlayerUI();
-
-		PlayerUI->SetArrowCount(ArrowCount);
 	}
 }
 
 void APlayerWeapon::ShowArrowLocationRotation(FVector Location, FRotator Rotation, bool aimOnOFf)
 {
+	auto PlayerController = Cast< APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	auto PlayerUI = PlayerController->getPlayerCharacter()->getPlayerUI();
+
+	PlayerUI->SetArrowCount(ArrowCount);
+
 	if (aimOnOFf && ArrowCount > 0)
 	{
 		Show_Arrow->SetVisibility(aimOnOFf);

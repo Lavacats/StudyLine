@@ -182,6 +182,8 @@ void APlayerCharacterBattleController::PlayerWeaponChangeLeft()
 		PlayerWeapon->setWeaponComponent(E_Weapon::Weapon_SWORD, p2PlayerCharacter->getPlayerMeshComponent()->getRootMesh(), TEXT("RightHandSocket"));
 		p2PlayerSate->setPlayerState(E_PlayerState::Player_SWORD);
 	}
+
+	p2PlayerCharacter->getPlayerUI()->SetHP(12, --hpvalue);
 }
 
 void APlayerCharacterBattleController::PlayerWeaponChangeRight()
@@ -199,4 +201,5 @@ void APlayerCharacterBattleController::PlayerWeaponChangeRight()
 		PlayerWeapon->setWeaponComponent(E_Weapon::Weapon_SWORD, p2PlayerCharacter->getPlayerMeshComponent()->getRootMesh(), TEXT("RightHandSocket"));
 		p2PlayerSate->setPlayerState(E_PlayerState::Player_SWORD);
 	}
+	p2PlayerCharacter->getPlayerUI()->SetHP(12, ++hpvalue);
 }

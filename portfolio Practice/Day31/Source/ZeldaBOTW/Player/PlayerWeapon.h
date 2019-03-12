@@ -43,9 +43,7 @@ public:
 	AWeapon_Equip* Weapon_Sword;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent*  ArrowBag;
-	//UPROPERTY(VisibleAnywhere, Category = Weapon)
-	//USkeletalMeshComponent*  ArrowBagBP;
+	UStaticMeshComponent*  ArrowBag;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	UStaticMeshComponent* Show_Arrow;

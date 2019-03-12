@@ -30,6 +30,7 @@ private:
 	bool IsShoot;
 	bool CanShootArrow;
 	bool IsSword;
+	int32 hpvalue = 12;
 
 	int32 WeaponIdleTime = 0;
 	FTimerHandle AttackTimerHandle;
