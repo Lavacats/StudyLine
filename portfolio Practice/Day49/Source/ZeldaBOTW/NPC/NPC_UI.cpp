@@ -19,6 +19,7 @@ void UNPC_UI::ItemImageChange(UImage * image)
 	if (IsValid(MenuUI)) {
 		MenuUI->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
 		MenuUI->SetBrushFromTexture(tex2);
+		// MenuUI->SetVisivible(false)
 	}
 
 	auto ItemName = Cast<UTextBlock>(GetWidgetFromName("ItemName"));
