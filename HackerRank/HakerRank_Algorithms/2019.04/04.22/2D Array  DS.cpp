@@ -10,10 +10,18 @@
 #include <math.h>
 using namespace std;
 
-vector<int> reverseArray(vector<int> a) {
-	vector<int> answer;
-	for (int i = 0; i < a.size(); i++) {
-		answer.push_back(a[a.size() - i-1]);
-	}
+int Function_1(string str, string chageStr) {
+	int answer = abs(str.length - chageStr.length);
 	return answer;
+}
+
+int Function_2(string str, string chageStr) {
+	sort(str.begin(), str.end());
+	sort(chageStr.begin(), chageStr.end());
+	int num = 0;
+	
+}
+
+void Function(string str, string chageStr) {
+	int try1 = Function_1(str, chageStr);
 }
