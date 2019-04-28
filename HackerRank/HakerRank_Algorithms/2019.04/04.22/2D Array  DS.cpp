@@ -10,18 +10,32 @@
 #include <math.h>
 using namespace std;
 
-int Function_1(string str, string chageStr) {
-	int answer = abs(str.length - chageStr.length);
-	return answer;
-}
-
-int Function_2(string str, string chageStr) {
-	sort(str.begin(), str.end());
-	sort(chageStr.begin(), chageStr.end());
-	int num = 0;
-	
-}
-
-void Function(string str, string chageStr) {
-	int try1 = Function_1(str, chageStr);
+int main() {
+	/* Enter your code here. Read input from STDIN. Print output to STDOUT */
+	int inputNum = 0;
+	vector<int> Element;
+	cin >> inputNum;
+	for (int i = 0; i < inputNum; i++) {
+		int firstCode = 0;
+		int secondCode = 0;
+		cin >> firstCode;
+		if (firstCode == 1) {
+			cin >> secondCode;
+			Element.push_back(secondCode);
+		}
+		else if (firstCode == 2) {
+			Element.pop_back();
+		}
+		else if (firstCode == 3) {
+			int maxNum = 0;
+			for (int i = 0; i < Element.size(); i++) {
+				if (Element[i] > maxNum) {
+					maxNum = Element[i];
+				}
+			}
+			cout << maxNum <<endl;
+		}
+		
+	}
+	return 0;
 }
