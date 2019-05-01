@@ -11,19 +11,18 @@
 using namespace std;
 
 
- SinglyLinkedListNode {
-     int data;
-     SinglyLinkedListNode* next;
- };
-
- SinglyLinkedListNode* deleteNode(SinglyLinkedListNode* head, int position) {
-	 SinglyLinkedListNode* basehead=head;
-	 SinglyLinkedListNode* preNode;
-	 for (int i = 0; i < position; i++) {
-		 preNode = head;
-		 head = head->next;
-	 }
-	 preNode->next = head->next;
-	 return basehead;
- }
-
+stirng shortStr(string str) {
+	int strSzie = str.size();
+	string shortStr;
+	char curChar = str[0];
+	int charCount = 0;
+	for (int i = 0; i < str.size(); i++) {
+		if (curChar == str[i]) {
+			charCount++;
+		}
+		else {
+			shortStr.push_back(curChar);
+			shortStr.push_back(charCount);
+		}
+	}
+}
